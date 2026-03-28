@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import EntryRow from './components/EntryRow';
+import ClaudeIcon from './components/ClaudeIcon';
 import { CATEGORIES, getAllTags, getEntriesForCategory, getEntriesForTag } from './data/entries';
 import './App.css';
 
@@ -67,7 +68,7 @@ export default function App() {
               className={`cat-tab ${cat.special ? 'cat-tab--special' : ''} ${activeCat === cat.id && !activeTag ? 'active' : ''}`}
               onClick={() => handleCatClick(cat.id)}
             >
-              {cat.icon ? `${cat.icon} ` : ''}{cat.label}
+              {cat.special ? <ClaudeIcon size={13} /> : cat.icon ? `${cat.icon} ` : ''}{cat.label}
             </button>
           ))}
         </div>
