@@ -1,25 +1,20 @@
 export default function ClaudeIcon({ size = 13 }) {
+  const c = size / 2
+  const r = size * 0.46
+  const r2 = size * 0.326
+  const sw = size * 0.22
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
+      viewBox={`0 0 ${size} ${size}`}
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 6, flexShrink: 0, marginTop: -1 }}
     >
-      <path
-        d="M12 1.5
-           C12 1.5 13.1 6.2 14.8 7.9
-           C16.5 9.6 21.5 10.2 21.5 10.2
-           C21.5 10.2 16.9 11.4 15.1 13.3
-           C13.3 15.2 12.8 20.5 12.8 20.5
-           C12.8 20.5 11.5 15.8 9.7 14
-           C7.9 12.2 2.5 11.5 2.5 11.5
-           C2.5 11.5 7.4 10.1 9.2 8.2
-           C11 6.3 12 1.5 12 1.5Z"
-        fill="#D97757"
-      />
+      <line x1={c} y1={c - r} x2={c} y2={c + r} stroke="#D97757" strokeWidth={sw} strokeLinecap="round"/>
+      <line x1={c - r} y1={c} x2={c + r} y2={c} stroke="#D97757" strokeWidth={sw} strokeLinecap="round"/>
+      <line x1={c - r2} y1={c - r2} x2={c + r2} y2={c + r2} stroke="#D97757" strokeWidth={sw} strokeLinecap="round"/>
+      <line x1={c + r2} y1={c - r2} x2={c - r2} y2={c + r2} stroke="#D97757" strokeWidth={sw} strokeLinecap="round"/>
     </svg>
   )
 }
