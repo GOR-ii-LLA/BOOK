@@ -1,9 +1,27 @@
 export const entries = [
-
+  {
+    "name": "Test",
+    "category": "программы",
+    "icon": "💻",
+    "link": "test.com",
+    "tags": [
+      "#тест",
+      "#проверка"
+    ],
+    "desc": "Тестовая запись для проверки watcher.",
+    "extra": "Бесплатно: Полностью бесплатно · Платно: Отсутствует",
+    "note": "Альтернативы: нет",
+    "id": 1
+  }
 ];
 
 export const CATEGORIES = [
   { id: 'claude',      label: 'Claude',     icon: null, special: true },
+  { id: 'бады',        label: 'БАДы',       icon: '🌿' },
+  { id: 'идеи',        label: 'Идеи',       icon: '💡' },
+  { id: 'лекарства',   label: 'Лекарства',  icon: '💊' },
+  { id: 'программы',   label: 'Программы',  icon: '💻' },
+  { id: 'товары',      label: 'Товары',     icon: '📦' },
 ];
 
 export function getEntriesForCategory(catId) {
