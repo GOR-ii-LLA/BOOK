@@ -6,7 +6,11 @@
 
 **Сайт:** https://gor-ii-lla.github.io/BOOK/
 **Репозиторий:** https://github.com/GOR-ii-LLA/BOOK
+<<<<<<< HEAD
 **Локальная папка:** `C:\ILYA\[Projects]\BOOK\`
+=======
+**Локальная папка:** `C:\Users\Work\Downloads\Yandex.Disk\[CLAUDE]\[PROJECTS]\BOOK\`
+>>>>>>> 3a3c311efecffeb9ecddd5267348f87ceee9eff3
 
 ---
 
