@@ -6,7 +6,7 @@
 
 **Сайт:** https://gor-ii-lla.github.io/BOOK/
 **Репозиторий:** https://github.com/GOR-ii-LLA/BOOK
-**Локальная папка:** `C:\ILYA\[Projects]\BOOK\`
+**Локальная папка:** `C:\ILYA\PROJECTS\BOOK\`
 
 ---
 
