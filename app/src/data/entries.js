@@ -39,11 +39,10 @@ export const entries = [
 
 export const CATEGORIES = [
   { id: 'claude',      label: 'Claude',     icon: null, special: true },
-  { id: 'бады',        label: 'БАДы',       icon: '🌿' },
-  { id: 'идеи',        label: 'Идеи',       icon: '💡' },
-  { id: 'лекарства',   label: 'Лекарства',  icon: '💊' },
+  { id: 'аптечка',     label: 'Аптечка',    icon: '💊' },
   { id: 'программы',   label: 'Программы',  icon: '💻' },
   { id: 'товары',      label: 'Товары',     icon: '📦' },
+  { id: 'чердак',      label: 'Чердак',     icon: '📥' },
 ];
 
 export function getActiveCategories() {
