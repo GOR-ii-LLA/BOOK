@@ -36,6 +36,17 @@ export default function EntryRow({ entry, onTagClick }) {
       {open && (
         <div className="entry-expand">
           <p className="entry-desc">{entry.desc}</p>
+          {entry.github && (
+            <a
+              className="entry-github"
+              href={`https://${entry.github}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={e => e.stopPropagation()}
+            >
+              GitHub →
+            </a>
+          )}
           {entry.extra && <p className="entry-extra">{entry.extra}</p>}
           {entry.note && <p className="entry-note">{entry.note}</p>}
           <div className="entry-expand-tags">
