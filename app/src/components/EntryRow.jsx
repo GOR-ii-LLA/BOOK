@@ -113,7 +113,6 @@ export default function EntryRow({ entry, onTagClick }) {
           </div>
           <div className="entry-dates">
             <span>Дата создания: {entry.created}</span>
-            <span>Дата изменения: {entry.updated}</span>
           </div>
         </div>
       )}
