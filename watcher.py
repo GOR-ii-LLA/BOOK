@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """
-BOOKMARKS Watcher — следит за vault/, парсит новые .md файлы и обновляет entries.js
+BOOKMARKS Watcher — пересобирает entries.js из всех .md файлов в vault/
+Новые файлы кладутся в vault/inbox/, watcher перемещает их в vault/.
+При каждом цикле entries.js генерируется заново из vault/.
 Запуск: python watcher.py
 """
 
-import os
 import re
 import json
 import time
+import shutil
+import hashlib
 import subprocess
 from pathlib import Path
 from datetime import datetime, date
@@ -22,65 +25,97 @@ POLL_SECONDS = 10
 # ── Категории ──────────────────────────────────────────────────────────────────
 CATEGORY_IDS = {
     "программа":  "программы",
-    "лекарство":  "лекарства",
-    "бад":        "бады",
+    "программы":  "программы",
+    "лекарство":  "аптечка",
+    "лекарства":  "аптечка",
+    "аптечка":    "аптечка",
+    "бад":        "аптечка",
+    "бады":       "аптечка",
     "товар":      "товары",
-    "идея":       "идеи",
+    "товары":     "товары",
+    "идея":       "чердак",
+    "идеи":       "чердак",
+    "чердак":     "чердак",
     "claude":     "Claude",
     "клод":       "Claude",
 }
 
-# ── Поля, после которых начинается новый ключ ─────────────────────────────────
+# ── Поля, которые watcher распознаёт (в нижнем регистре) ───────────────────────
 KNOWN_FIELDS = [
     "категория", "официальная страница", "github", "подробнее",
-    "бесплатная версия", "бесплатно", "теги", "дата создания", "дата изменения",
+    "youtube", "ресурсы", "бесплатная версия", "бесплатно",
+    "теги", "дата создания", "дата изменения",
 ]
+
+# Файлы с ошибками — логируем warning только один раз
+_warned_files = set()
 
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
+
+# ── Безопасное перемещение файла ───────────────────────────────────────────────
+def safe_move(src: Path, dst: Path):
+    """Перемещает файл из src в dst. Если dst существует — перезаписывает."""
+    try:
+        if dst.exists():
+            dst.unlink()
+        src.rename(dst)
+    except Exception:
+        shutil.copy2(str(src), str(dst))
+        src.unlink()
+
+# ── Парсинг списка name|url ────────────────────────────────────────────────────
+def parse_media_list(raw: str) -> list[dict]:
+    """Парсит 'название1 | ссылка1, название2 | ссылка2' в список {name, url}"""
+    items = []
+    if not raw.strip():
+        return items
+    for part in raw.split(","):
+        part = part.strip()
+        if "|" in part:
+            name, url = part.split("|", 1)
+            name = name.strip()
+            url = url.strip()
+            if name and url:
+                items.append({"name": name, "url": url})
+    return items
 
 # ── Парсинг .md файла ──────────────────────────────────────────────────────────
 def parse_md(path: Path) -> dict | None:
     text = path.read_text(encoding="utf-8")
     lines = text.strip().splitlines()
 
-    def field(key):
-        """Однострочное поле: возвращает текст после 'Ключ:'"""
-        for line in lines:
-            if line.lower().startswith(key.lower() + ":"):
-                return line[len(key)+1:].strip()
-        return ""
-
-    def multiline_field(key):
-        """Многострочное поле: собирает все строки от 'Ключ:' до следующего известного поля."""
-        result_lines = []
-        collecting = False
-        for line in lines:
-            # Если встретили наш ключ — начинаем собирать
-            if line.lower().startswith(key.lower() + ":"):
-                first_part = line[len(key)+1:].strip()
-                if first_part:
-                    result_lines.append(first_part)
-                collecting = True
-                continue
-            # Если собираем и встретили другой известный ключ — стоп
-            if collecting:
-                is_new_field = False
-                for f in KNOWN_FIELDS:
-                    if line.lower().startswith(f + ":"):
-                        is_new_field = True
-                        break
-                if is_new_field:
-                    break
-                # Пропускаем пустые строки, добавляем непустые
-                stripped = line.strip()
-                if stripped:
-                    result_lines.append(stripped)
-        return "\n".join(result_lines)
-
     name = lines[0].lstrip("#").strip() if lines else path.stem
+
+    # Парсим поля с поддержкой многострочных значений
+    fields = {}
+    current_key = None
+    current_lines = []
+
+    for line in lines[1:]:
+        matched_field = None
+        for f in KNOWN_FIELDS:
+            if line.lower().startswith(f + ":"):
+                matched_field = f
+                break
+
+        if matched_field:
+            if current_key:
+                fields[current_key] = "\n".join(current_lines).strip()
+            current_key = matched_field
+            value_after_colon = line[len(matched_field) + 1:].strip()
+            current_lines = [value_after_colon] if value_after_colon else []
+        elif current_key:
+            current_lines.append(line)
+
+    if current_key:
+        fields[current_key] = "\n".join(current_lines).strip()
+
+    def field(key):
+        return fields.get(key.lower(), "")
+
     category_raw = field("Категория").lower().strip(". ")
-    desc = multiline_field("Подробнее")
+    desc = field("Подробнее")
     link_raw = field("Официальная страница")
     link = re.sub(r"https?://(www\.)?", "", link_raw).rstrip("/")
     github_raw = field("GitHub")
@@ -90,6 +125,9 @@ def parse_md(path: Path) -> dict | None:
     created = field("Дата создания") or str(date.today())
     updated = field("Дата изменения") or str(date.today())
 
+    youtube = parse_media_list(field("Youtube"))
+    resources = parse_media_list(field("Ресурсы"))
+
     # Normalize category
     cat_id = None
     for key in CATEGORY_IDS:
@@ -97,15 +135,19 @@ def parse_md(path: Path) -> dict | None:
             cat_id = CATEGORY_IDS[key]
             break
     if not cat_id:
-        log(f"  ⚠ Неизвестная категория '{category_raw}' в {path.name}, пропускаю")
+        if path.name not in _warned_files:
+            log(f"  ⚠ Неизвестная категория '{category_raw}' в {path.name}, пропускаю")
+            _warned_files.add(path.name)
         return None
 
-    # Tags: split by comma or space, add # prefix
+    # Tags
     tags = []
     for t in re.split(r"[,،]\s*", tags_raw):
         t = t.strip().lower()
         if t:
-            tags.append("#" + t.replace(" ", "-"))
+            if not t.startswith("#"):
+                t = "#" + t
+            tags.append(t.replace(" ", "-"))
 
     return {
         "category": cat_id,
@@ -113,63 +155,42 @@ def parse_md(path: Path) -> dict | None:
         "link":     link,
         "github":   github,
         "desc":     desc,
+        "youtube":  youtube,
+        "resources": resources,
         "free":     free,
         "tags":     tags,
         "created":  created,
         "updated":  updated,
     }
 
-# ── Чтение текущего entries.js ─────────────────────────────────────────────────
-def read_entries() -> list[dict]:
-    text = ENTRIES_FILE.read_text(encoding="utf-8")
-    match = re.search(r"export const entries = (\[.*?\]);", text, re.DOTALL)
-    if not match:
-        return []
-    try:
-        return json.loads(match.group(1))
-    except Exception:
-        return []
-
 # ── Запись entries.js ──────────────────────────────────────────────────────────
 def write_entries(entries: list[dict]):
     entries_json = json.dumps(entries, ensure_ascii=False, indent=2)
+    entries_block = f"export const entries = {entries_json};"
 
     template = ENTRIES_FILE.read_text(encoding="utf-8")
-    # Find the position of the entries array and replace it directly
-    start_marker = "export const entries = "
-    start_idx = template.find(start_marker)
-    if start_idx == -1:
-        return
-    # Find the closing "];" after the start
-    bracket_start = template.find("[", start_idx)
-    depth = 0
-    end_idx = bracket_start
-    for i in range(bracket_start, len(template)):
-        if template[i] == "[":
-            depth += 1
-        elif template[i] == "]":
-            depth -= 1
-            if depth == 0:
-                end_idx = i
-                break
-    # Skip the ";" after "]"
-    if end_idx + 1 < len(template) and template[end_idx + 1] == ";":
-        end_idx += 1
-
-    new_text = template[:start_idx] + f"export const entries = {entries_json};" + template[end_idx + 1:]
+    new_text = re.sub(
+        r"export const entries = \[.*?\];",
+        lambda m: entries_block,
+        template,
+        flags=re.DOTALL
+    )
     ENTRIES_FILE.write_text(new_text, encoding="utf-8")
 
+# ── Хеш entries для сравнения ──────────────────────────────────────────────────
+def entries_hash(entries: list[dict]) -> str:
+    """Возвращает хеш списка записей для сравнения."""
+    return hashlib.md5(json.dumps(entries, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+
 # ── Git push ───────────────────────────────────────────────────────────────────
-def git_push(names: list[str]):
+def git_push(msg: str):
     cwd = str(SCRIPT_DIR)
     def run(cmd):
         return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
 
     run(["git", "add", str(ENTRIES_FILE)])
-    msg = "Add: " + ", ".join(names)
     result = run(["git", "commit", "-m", msg])
     if "nothing to commit" in result.stdout:
-        log("  Git: нечего коммитить")
         return
     push = run(["git", "push", "origin", "main"])
     if push.returncode == 0:
@@ -177,56 +198,77 @@ def git_push(names: list[str]):
     else:
         log(f"  ❌ Ошибка пуша: {push.stderr}")
 
-# ── Обработка новых файлов ─────────────────────────────────────────────────────
+# ── Перемещение новых файлов из inbox в vault ──────────────────────────────────
 def process_inbox():
+    """Перемещает .md файлы из inbox в vault."""
     if not INBOX_DIR.exists():
-        return
+        return []
 
-    md_files = list(INBOX_DIR.glob("*.md"))
-    if not md_files:
-        return
+    moved = []
+    for md_file in sorted(INBOX_DIR.glob("*.md")):
+        try:
+            dst = VAULT_DIR / md_file.name
+            log(f"Новый файл: {md_file.name}")
+            safe_move(md_file, dst)
+            moved.append(md_file.name)
+        except Exception as e:
+            log(f"  ❌ Ошибка перемещения {md_file.name}: {e}")
 
-    entries = read_entries()
-    existing_names = {e["name"].lower() for e in entries}
-    added = []
+    return moved
 
-    for md_file in sorted(md_files):
-        log(f"Обрабатываю: {md_file.name}")
-        entry = parse_md(md_file)
-        if not entry:
-            continue
-        if entry["name"].lower() in existing_names:
-            # Обновляем существующую запись
-            entries = [e for e in entries if e["name"].lower() != entry["name"].lower()]
-            log(f"  ♻ Обновляю: {entry['name']}")
-        entries.append(entry)
-        existing_names.add(entry["name"].lower())
-        added.append(entry["name"])
-        log(f"  ✅ Добавлено: {entry['name']} [{entry['category']}]")
-
-        # Move from inbox to vault
-        md_file.rename(VAULT_DIR / md_file.name)
-
-    if added:
-        write_entries(entries)
-        log(f"entries.js обновлён ({len(entries)} записей)")
-        git_push(added)
+# ── Сборка entries.js из всех .md в vault ─────────────────────────────────────
+def rebuild_entries() -> list[dict]:
+    """Парсит все .md файлы в vault и возвращает список записей."""
+    entries = []
+    for md_file in sorted(VAULT_DIR.glob("*.md")):
+        try:
+            entry = parse_md(md_file)
+            if entry:
+                entries.append(entry)
+        except Exception as e:
+            log(f"  ❌ Ошибка парсинга {md_file.name}: {e}")
+    return entries
 
 # ── Главный цикл ───────────────────────────────────────────────────────────────
 def main():
     log("BOOKMARKS Watcher запущен")
-    log(f"Слежу за: {INBOX_DIR}")
+    log(f"Слежу за: {VAULT_DIR}")
+    log(f"Inbox: {INBOX_DIR}")
     log(f"Интервал: {POLL_SECONDS} сек")
     log("Ctrl+C для остановки")
     print()
 
     INBOX_DIR.mkdir(parents=True, exist_ok=True)
 
+    # Хеш текущего состояния для сравнения
+    prev_hash = ""
+
     while True:
         try:
-            process_inbox()
+            # 1. Перемещаем новые файлы из inbox в vault
+            moved = process_inbox()
+
+            # 2. Пересобираем entries из всех .md в vault
+            entries = rebuild_entries()
+
+            # 3. Сравниваем с предыдущим состоянием
+            new_hash = entries_hash(entries)
+
+            if new_hash != prev_hash:
+                write_entries(entries)
+                prev_hash = new_hash
+                names = [e["name"] for e in entries]
+                log(f"entries.js обновлён ({len(entries)} записей: {', '.join(names)})")
+
+                # 4. Git push
+                if moved:
+                    git_push(f"Add: {', '.join(moved)}")
+                else:
+                    git_push("Update entries")
+
         except Exception as e:
             log(f"Ошибка: {e}")
+
         time.sleep(POLL_SECONDS)
 
 if __name__ == "__main__":

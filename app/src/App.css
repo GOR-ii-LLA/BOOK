@@ -19,6 +19,12 @@
   --radius-sm: 6px;
   --font-display: 'Unbounded', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --yt: #c33;
+  --yt-light: #fdeaea;
+  --yt-text: #a22;
+  --res: #5b7fb5;
+  --res-light: #eaf0f8;
+  --res-text: #3a5a8a;
 }
 
 .dark {
@@ -33,6 +39,10 @@
   --accent-text: #5DCAA5;
   --claude-light: #2d1a12;
   --claude-text: #F0997B;
+  --yt-light: #2d1515;
+  --yt-text: #f08080;
+  --res-light: #1a2230;
+  --res-text: #8ab4e8;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -93,6 +103,14 @@ a { text-decoration: none; }
 .entry-expand-tags .tag-pill { font-size: 11px; padding: 3px 9px; background: var(--accent-light); border-color: var(--accent); color: var(--accent-text); }
 .entry-expand-tags .tag-pill:hover { opacity: 0.85; }
 
+/* Youtube & Resources blocks */
+.entry-media-block { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+.entry-media-title { font-size: 12px; font-weight: 500; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 1px; }
+.entry-media-link { font-size: 13px; line-height: 1.5; transition: opacity 0.15s; }
+.entry-media-link:hover { opacity: 0.75; }
+.entry-media-link--yt { color: var(--yt-text); }
+.entry-media-link--res { color: var(--res-text); }
+
 .empty { padding: 2.5rem; text-align: center; color: var(--text-faint); font-size: 14px; }
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -110,10 +128,3 @@ a { text-decoration: none; }
   .entry-name { font-size: 15px; }
   .entry-expand { padding: 12px 12px 14px 12px; }
 }
-
-/* Новые стили для EntryRow */
-.entry-field { font-size: 13px; color: var(--text-muted); }
-.entry-field-label { color: var(--text-faint); }
-.entry-field-link { color: var(--accent); transition: opacity 0.15s; }
-.entry-field-link:hover { opacity: 0.75; }
-.entry-dates { font-size: 11px; color: var(--text-faint); margin-top: 4px; }

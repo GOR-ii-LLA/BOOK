@@ -22,49 +22,67 @@ export default function EntryRow({ entry, onTagClick }) {
             {sorted.join(' · ')}
           </span>
         </div>
-        {entry.link && (
-          <a
-            className="entry-link"
-            href={`https://${entry.link}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={e => e.stopPropagation()}
-          >
-            {entry.link} →
-          </a>
-        )}
+        <a
+          className="entry-link"
+          href={`https://${entry.link}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={e => e.stopPropagation()}
+        >
+          {entry.link} →
+        </a>
       </div>
       {open && (
         <div className="entry-expand">
-          <p className="entry-field">
-            <span className="entry-field-label">Официальная страница: </span>
-            {entry.link ? (
-              <a
-                className="entry-field-link"
-                href={`https://${entry.link}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-              >
-                {entry.link}
-              </a>
-            ) : null}
-          </p>
-          <p className="entry-field">
-            <span className="entry-field-label">GitHub: </span>
-            {entry.github ? (
-              <a
-                className="entry-field-link"
-                href={`https://${entry.github}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-              >
-                {entry.github}
-              </a>
-            ) : null}
-          </p>
           <p className="entry-desc">{entry.desc}</p>
+
+          {entry.youtube && entry.youtube.length > 0 && (
+            <div className="entry-media-block">
+              <span className="entry-media-title">Youtube:</span>
+              {entry.youtube.map((item, i) => (
+                <a
+                  key={i}
+                  className="entry-media-link entry-media-link--yt"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {entry.resources && entry.resources.length > 0 && (
+            <div className="entry-media-block">
+              <span className="entry-media-title">Ресурсы:</span>
+              {entry.resources.map((item, i) => (
+                <a
+                  key={i}
+                  className="entry-media-link entry-media-link--res"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {entry.github && (
+            <a
+              className="entry-github"
+              href={`https://${entry.github}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={e => e.stopPropagation()}
+            >
+              GitHub →
+            </a>
+          )}
           {entry.free && <p className="entry-free">{entry.free}</p>}
           <div className="entry-expand-tags">
             {sorted.map(tag => (
@@ -77,12 +95,6 @@ export default function EntryRow({ entry, onTagClick }) {
               </button>
             ))}
           </div>
-          {entry.created && (
-            <p className="entry-dates">Дата создания: {entry.created}</p>
-          )}
-          {entry.updated && (
-            <p className="entry-dates">Дата изменения: {entry.updated}</p>
-          )}
         </div>
       )}
     </>
