@@ -18,8 +18,7 @@ export const entries = [
       "#code",
       "#vibecode"
     ],
-    "created": "2026-04-03",
-    "updated": "2026-04-03"
+    "created": "2026-04-03\nДата изменения: 2026-04-03"
   },
   {
     "category": "программы",
@@ -34,8 +33,7 @@ export const entries = [
       "#дизайн",
       "#ui-ux"
     ],
-    "created": "2026-04-03",
-    "updated": "2026-04-03"
+    "created": "2026-04-03\nДата изменения: 2026-04-03"
   },
   {
     "category": "Claude",
@@ -52,8 +50,7 @@ export const entries = [
       "#mcp",
       "#free"
     ],
-    "created": "2026-04-03",
-    "updated": "2026-04-03"
+    "created": "2026-04-03\nДата изменения: 2026-04-03"
   },
   {
     "category": "программы",
@@ -69,8 +66,7 @@ export const entries = [
       "#pdf",
       "#free"
     ],
-    "created": "2026-04-03",
-    "updated": "2026-04-03"
+    "created": "2026-04-03\nДата изменения: 2026-04-03"
   },
   {
     "category": "Claude",
@@ -86,8 +82,7 @@ export const entries = [
       "#api",
       "#mcp"
     ],
-    "created": "2026-04-03",
-    "updated": "2026-04-03"
+    "created": "2026-04-03\nДата изменения: 2026-04-03"
   },
   {
     "category": "программы",
@@ -103,8 +98,7 @@ export const entries = [
       "#proxy",
       "#vpn"
     ],
-    "created": "2026-04-03",
-    "updated": "2026-04-03"
+    "created": "2026-04-03\nДата изменения: 2026-04-03"
   }
 ];
 
