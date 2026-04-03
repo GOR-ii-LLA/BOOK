@@ -44,7 +44,7 @@ CATEGORY_IDS = {
 KNOWN_FIELDS = [
     "категория", "официальная страница", "github", "подробнее",
     "youtube", "ресурсы", "бесплатная версия", "бесплатно",
-    "теги", "дата создания", "дата изменения",
+    "теги", "дата создания",
 ]
 
 # Файлы с ошибками — логируем warning только один раз
@@ -123,7 +123,6 @@ def parse_md(path: Path) -> dict | None:
     free = field("Бесплатная версия") or field("Бесплатно")
     tags_raw = field("Теги")
     created = field("Дата создания") or str(date.today())
-    updated = field("Дата изменения") or str(date.today())
 
     youtube = parse_media_list(field("Youtube"))
     resources = parse_media_list(field("Ресурсы"))
@@ -160,7 +159,6 @@ def parse_md(path: Path) -> dict | None:
         "free":     free,
         "tags":     tags,
         "created":  created,
-        "updated":  updated,
     }
 
 # ── Запись entries.js ──────────────────────────────────────────────────────────
