@@ -95,6 +95,10 @@ a { text-decoration: none; }
 .entry-link:hover { opacity: 0.75; }
 
 .entry-expand { background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 14px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.entry-site { font-size: 13px; color: var(--text-muted); }
+.entry-site a { color: var(--accent); transition: opacity 0.15s; }
+.entry-site a:hover { opacity: 0.75; }
+.entry-field-label { color: var(--text-faint); }
 .entry-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; white-space: pre-line; }
 .entry-github { font-size: 13px; color: var(--accent); transition: opacity 0.15s; }
 .entry-github:hover { opacity: 0.75; }
