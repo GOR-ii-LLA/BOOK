@@ -206,6 +206,23 @@ export const entries = [
   },
   {
     "category": "Claude",
+    "name": "JetBrains Claude Code Plugin",
+    "link": "plugins.jetbrains.com/plugin/27310-claude-code-beta-",
+    "github": "",
+    "desc": "Официальный плагин от Anthropic, который встраивает Claude Code прямо в JetBrains IDE — IntelliJ, PyCharm, WebStorm, GoLand, PhpStorm и Android Studio — и превращает их во временный терминал с суперспособностями.\nГлавная польза: когда Claude предлагает изменения в коде, они открываются не в терминале, а прямо в привычном diff-viewer IDE — можно наглядно сравнить старый и новый вариант и принять или отклонить каждый кусок.\nПлагин автоматически передаёт Claude контекст: выделенный фрагмент кода, открытый файл и даже ошибки линтера — так Claude сразу «видит» то же, что видишь ты, и отвечает точнее.\nБыстрый вызов через Cmd+Esc (Mac) или Ctrl+Esc (Windows/Linux) открывает Claude Code прямо из редактора; ссылка на файл вставляется через Cmd+Option+K — не надо вручную описывать, что именно нужно поправить.\nТребует отдельно установленного Claude Code CLI — плагин сам по себе не работает; кроме того, при включённом режиме auto-edit Claude может менять конфигурационные файлы IDE, поэтому рекомендуется оставлять ручное подтверждение правок.",
+    "youtube": [],
+    "resources": [],
+    "free": "Плагин бесплатный. Требует подписки Claude Pro или подключения API-ключа Anthropic — тарификация по токенам.",
+    "tags": [
+      "#ide",
+      "#разработка",
+      "#claude-code",
+      "#free"
+    ],
+    "created": "2026-04-04"
+  },
+  {
+    "category": "Claude",
     "name": "LangChain",
     "link": "langchain.com",
     "github": "github.com/langchain-ai/langchain",
