@@ -684,6 +684,23 @@ export const entries = [
   },
   {
     "category": "Claude",
+    "name": "PostgreSQL MCP Server",
+    "link": "github.com/modelcontextprotocol/servers-archived/tree/HEAD/src/postgres",
+    "github": "github.com/modelcontextprotocol/servers-archived",
+    "desc": "PostgreSQL MCP Server — это мост между Claude и твоей базой данных PostgreSQL: подключаешь его один раз, и дальше можно спрашивать Claude на обычном языке — «покажи все заказы за прошлый месяц» — и он сам напишет и выполнит нужный SQL-запрос.\nПредставь, что у тебя таблица с клиентами и заказами: не нужно открывать pgAdmin или писать запросы вручную — просто пишешь Claude «найди всех клиентов, которые не делали заказов больше 90 дней», и получаешь готовый ответ.\nСервер работает в режиме только чтения — Claude может просматривать данные и структуру таблиц, но не может ничего изменить или удалить, что делает его безопасным для работы с реальными базами.\nПодключить к Claude Desktop легко: одна строка в конфигурационный файл с адресом базы, и в новом чате появляется иконка молоточка — значит Claude видит твою базу и может работать с ней.\nВажный нюанс: оригинальный сервер от Anthropic переведён в архив (май 2025) и содержал уязвимость SQL-инъекции — для продакшена лучше использовать более надёжные альтернативы: pgEdge Postgres MCP (github.com/pgEdge/postgres-mcp) или Postgres MCP Pro от Crystal DBA (crystaldba/postgres-mcp).",
+    "youtube": [],
+    "resources": [],
+    "free": "Полностью бесплатно и открытый исходный код (MIT лицензия). Альтернативы pgEdge и Postgres MCP Pro тоже бесплатны и open-source.",
+    "tags": [
+      "#база-данных",
+      "#mcp",
+      "#free",
+      "#разработка"
+    ],
+    "created": "2026-04-05"
+  },
+  {
+    "category": "Claude",
     "name": "Python",
     "link": "python.org",
     "github": "github.com/python/cpython",
