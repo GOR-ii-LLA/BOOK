@@ -1218,6 +1218,7 @@ export const entries = [
 
 export const CATEGORIES = [
   { id: 'Claude',     label: 'Claude',     special: true },
+  { id: 'Vibecode',   label: 'Vibecode',   special: true },
   { id: 'аптечка',    label: 'Аптечка'    },
   { id: 'программы',  label: 'Программы'  },
   { id: 'товары',     label: 'Товары'     },
@@ -1231,6 +1232,9 @@ export function getActiveCategories() {
 export function getEntriesForCategory(catId) {
   if (catId === 'Claude') {
     return entries.filter(e => e.category === 'Claude').sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+  }
+  if (catId === 'Vibecode') {
+    return entries.filter(e => e.category === 'Vibecode').sort((a, b) => a.name.localeCompare(b.name, 'ru'));
   }
   return entries.filter(e => e.category === catId).sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 }
