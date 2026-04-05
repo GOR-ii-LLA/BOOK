@@ -97,6 +97,7 @@ a { text-decoration: none; }
   -webkit-overflow-scrolling: touch;
 }
 .cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tabs .tag-pill { margin: 6px 0 6px 8px; }
 
 .cat-tab {
   font-size: 13px;

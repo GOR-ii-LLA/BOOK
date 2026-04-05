@@ -162,7 +162,7 @@ function App() {
               </button>
             ))}
             <button
-              className={`cat-tab ${activeTag === '#frontend' ? 'active' : ''}`}
+              className={`tag-pill ${activeTag === '#frontend' ? 'active' : ''}`}
               onClick={() => selectTag('#frontend')}>
               #frontend
             </button>
@@ -170,7 +170,7 @@ function App() {
         </div>
 
         <div className="tag-bar">
-          {allTags.map(t => (
+          {allTags.filter(t => t !== '#frontend').map(t => (
             <button key={t} className={`tag-pill ${activeTag === t ? 'active' : ''}`}
                     onClick={() => selectTag(t)}>{t}</button>
           ))}
