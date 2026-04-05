@@ -7,8 +7,9 @@ GitHub: https://github.com/anthropics/claude-code
 Claude Code работает не только в терминале — есть расширения для VS Code, JetBrains, десктоп-приложение и веб-версия на claude.ai/code, так что можно пользоваться из любого удобного места.
 Через протокол MCP можно подключить внешние инструменты — Google Drive, Jira, Slack — и Claude Code будет работать с ними напрямую, например читать техзадание из Google Docs и сразу писать код по нему.
 Claude Code не входит в бесплатный план — нужна подписка Pro ($20/мес) или выше; на репозитории 65 000+ звёзд, проект активно развивается Anthropic.
-Youtube: Я потратил на Claude Code 1 000 часов. Вот что нужно знать для вайб-кодинга | https://youtu.be/sx6ZSbc51gY?si=jfPUKf7_r9cDkdoP
+Youtube: Я потратил на Claude Code 1 000 часов. Вот что нужно знать для вайб-кодинга | https://youtu.be/sx6ZSbc51gY?si=jfPUKf7_r9cDkdoP, Claude Code + Playwright: ИИ сам тестирует твой сайт за тебя | https://youtu.be/cR7MzV-OA1Y?si=pQZpAnESPFXu7wVb
 Ресурсы:
 Бесплатная версия: Нет, требуется подписка Claude Pro ($20/мес) или выше. Код проекта открыт на GitHub.
 Теги: разработка, code, vibecode
 Дата создания: 2026-04-03
+Дата изменения: 2026-04-04

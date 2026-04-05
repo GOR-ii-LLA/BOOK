@@ -38,6 +38,8 @@ CATEGORY_IDS = {
     "чердак":     "чердак",
     "claude":     "Claude",
     "клод":       "Claude",
+    "vibecode":   "Vibecode",
+    "вайбкод":    "Vibecode",
 }
 
 # ── Поля, которые watcher распознаёт (в нижнем регистре) ───────────────────────
